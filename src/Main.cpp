@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 	std::thread consumerThread(&Consumer::threadEntry,
 	                           std::ref(listener), std::ref(sound));
 
-	initGraphics(argc, argv);
+	graphicsMain(argc, argv);
 
 	if (argc > 1 && strcmp(argv[1], "--bg") == 0)
 		controller.setPolicy(Leap::Controller::POLICY_BACKGROUND_FRAMES);

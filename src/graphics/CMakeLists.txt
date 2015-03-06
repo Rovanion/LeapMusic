@@ -3,12 +3,13 @@ add_library (Graphics
 	GLUtilities.c
 	VectorUtils3.c
 	LoadObject.c
-	shaders/hand.vert
-	shaders/hand.frag)
+	LoadTGA.c
+	shaders/main.vert
+	shaders/main.frag)
 target_link_libraries (Graphics
 	${OPENGL_LIBRARIES}
-	${GLUT_LIBRARIES}
-	${GLEW_LIBRARIES})
+	${GLUT_LIBRARIES})
+
 
 
 add_custom_command(TARGET Graphics POST_BUILD
@@ -20,3 +21,8 @@ add_custom_command(TARGET Graphics POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/models
         $<TARGET_FILE_DIR:Graphics>/models)
+
+add_custom_command(TARGET Graphics POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/textures
+        $<TARGET_FILE_DIR:Graphics>/textures)

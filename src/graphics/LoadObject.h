@@ -1,12 +1,15 @@
-#ifndef LOADOBJECT_H
-#define LOADOBJECT_H
+#ifndef loadobj_h
+#define loadobj_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <GL/glew.h>
-
+#ifdef __APPLE__
+	#include <OpenGL/gl3 .h>
+#else
+	#include <GL/gl.h>
+#endif
 
 typedef struct
 {

@@ -9,13 +9,15 @@
 // 130422: Added ScaleModel
 // 140203: A minor fix of an unreadable (but working) line
 
+#include "LoadObject.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
-#include "LoadObject.h"
-
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
 
 typedef struct Mesh
 {
@@ -34,21 +36,21 @@ typedef struct Mesh
 	int		*triangleCountList;
 	int		**vertexToTriangleTable;
 
-	GLfloat radius;   // Enclosing sphere
+	GLfloat radius; // Enclosing sphere
 	GLfloat radiusXZ; // For cylindrical tests
 } Mesh, *MeshPtr;
 
 
 
-#define vToken			 1
+#define vToken				1
 #define vnToken			 2
 #define vtToken			 3
 #define kReal				 4
-#define kInt				 5
-#define tripletToken 6
-#define fToken			 7
+#define kInt					5
+#define tripletToken	6
+#define fToken				7
 #define crlfToken		 8
-#define kEOF				 9
+#define kEOF					9
 #define kUnknown		 10
 
 
@@ -859,10 +861,10 @@ void ScaleModel(Model *m, float sx, float sy, float sz)
 
 void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName)
 {
-	printf("lol2");
 	if (m != NULL)
 	{
 		GLint loc;
+
 		glBindVertexArray(m->vao);	// Select VAO
 
 		glBindBuffer(GL_ARRAY_BUFFER, m->vb);

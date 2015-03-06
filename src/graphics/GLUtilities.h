@@ -5,8 +5,7 @@
 extern "C" {
 #endif
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/gl.h>
 
 
 void printError(const char *functionName);

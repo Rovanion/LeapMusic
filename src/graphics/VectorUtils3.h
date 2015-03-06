@@ -24,6 +24,7 @@
 #define Matrix3D mat3
 #define Matrix4D mat4
 
+	// vec3 is very useful
 	typedef struct vec3
 	{
 		GLfloat x, y, z;
