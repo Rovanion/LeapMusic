@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -24,10 +26,10 @@ const GLfloat Graphics::viewFrustum[] =
 	 0.0f, 0.0f, -(far + near)/(far - near),
 	 -2*far*near/(far - near),
 	 0.0f, 0.0f, -1.0f, 0.0f };
+Model* Graphics::bunny = new Model;
 
 // The following will be reassigned in initResources.
 GLuint Graphics::handProgram = 0;
-Model* Graphics::bunny = NULL;
 
 void Graphics::init(int argc, char** argv) {
 	int* pargc = &argc;
@@ -37,7 +39,8 @@ void Graphics::init(int argc, char** argv) {
 	glutInitWindowSize(400, 300);
 	glutCreateWindow("Leap Music!");
 
-	std::cout << "Before init" << std::endl;
+ 	if (DEBUG)
+		std::cout << "Before init" << std::endl;
 
   // Extension wrangler initialising
   GLenum glew_status = glewInit();
@@ -45,34 +48,40 @@ void Graphics::init(int argc, char** argv) {
 		std::cout << "Error: " << glewGetErrorString(glew_status) << std::endl;
 		exit(11);
   }
-	std::cout << "After main loop" << initResources() << std::endl;
+	if (DEBUG)
+		std::cout << "After main loop" << std::endl;
+	std::cout << bunny << std::endl;
+	bunny = initResources();
+	std::cout << "wabababa" << std::endl;
+	std::cout << bunny << std::endl;
 
-	if (true) {
-    /* We can display it if everything goes OK */
-    glutDisplayFunc(onDisplay);
+	glutDisplayFunc(onDisplay);
+	glutMainLoop();
 
-    glutMainLoop();
-  }
 
 	// Upon exiting the main loop;
 	freeResources();
 }
 
 
-int Graphics::initResources(void) {
+Model* Graphics::initResources(void) {
+	if (DEBUG)
+		std::cout << "In init" << std::endl;
 	handProgram = loadShaders("./src/graphics/shaders/hand.vert",
 	                          "./src/graphics/shaders/hand.frag");
-	bunny = LoadModelPlus("./src/graphics/models/bunnyplus.obj");
-	std::cout << "In init" << std::endl;
 	glUniformMatrix4fv(glGetUniformLocation(handProgram, "viewFrustum"),
 										 1, GL_TRUE, viewFrustum);
 
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glutTimerFunc(16, &Graphics::onTimer, 0);
-	return 1;
+
+	return LoadModelPlus("./src/graphics/models/bunnyplus.obj");
 }
 
 void Graphics::onDisplay(void) {
+	std::cout << "lol" << std::endl;
+	std::cout << bunny->numVertices << std::endl;
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(handProgram);
 	drawObject(transHand, bunny, handProgram);
@@ -85,10 +94,69 @@ void Graphics::freeResources(void) {
 void Graphics::drawObject(mat4 transform, Model* model, GLuint p) {
 	glUniformMatrix4fv(glGetUniformLocation(p, "transform"),
 	                   1, GL_TRUE, transform.m);
-	DrawModel(model, p, "vertPosition", "vertNormal", "vertTexureCoordinate");
+
+	drawModel(model, p, "vertPosition", "vertNormal", "vertTexureCoordinate");
 }
 
 void Graphics::onTimer(int value) {
 	glutPostRedisplay();
 	glutTimerFunc(20, &Graphics::onTimer, value);
+}
+
+
+void Graphics::drawModel(Model *m,
+												 GLuint program,
+												 char* vertexVariableName,
+												 char* normalVariableName,
+												 char* texCoordVariableName) {
+
+	std::cout << "lol2" << m->vao << std::endl;
+
+	if (m) {
+		GLint loc;
+
+		glBindVertexArray(m->vao);	// Select VAO
+
+		glBindBuffer(GL_ARRAY_BUFFER, m->vb);
+
+		loc = glGetAttribLocation(program, vertexVariableName);
+		if (loc >= 0)
+			{
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+				glEnableVertexAttribArray(loc);
+			}
+		else
+			fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", vertexVariableName);
+
+		if (normalVariableName)
+			{
+				loc = glGetAttribLocation(program, normalVariableName);
+				if (loc >= 0)
+					{
+						glBindBuffer(GL_ARRAY_BUFFER, m->nb);
+						glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+						glEnableVertexAttribArray(loc);
+					}
+				else
+					fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", normalVariableName);
+			}
+
+		// VBO for texture coordinate data NEW for 5b
+		if ((m->texCoordArray != NULL)&&(texCoordVariableName != NULL))
+			{
+				loc = glGetAttribLocation(program, texCoordVariableName);
+				if (loc >= 0)
+					{
+						glBindBuffer(GL_ARRAY_BUFFER, m->tb);
+						glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+						glEnableVertexAttribArray(loc);
+					}
+				else
+					fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", texCoordVariableName);
+			}
+
+		glDrawElements(GL_TRIANGLES, m->numIndices, GL_UNSIGNED_INT, 0L);
+	}
+	else
+		std::cout << "DrawModel error: Nullpointer passed!\n";
 }

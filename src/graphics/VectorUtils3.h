@@ -27,11 +27,6 @@
 	typedef struct vec3
 	{
 		GLfloat x, y, z;
-		#ifdef __cplusplus
-			vec3(GLfloat x2, GLfloat y2, GLfloat z2) : x(x2), y(y2), z(z2) {}
-
-		//vec3(vec4 v) : x(v.x), y(v.y), z(v.z) {}
-		#endif
 	}
 	vec3, *vec3Ptr;
 
@@ -40,11 +35,6 @@
 	typedef struct vec4
 	{
 		GLfloat x, y, z, w; // w or h
-		#ifdef __cplusplus
-			vec4(GLfloat x2, GLfloat y2, GLfloat z2, GLfloat w2) : x(x2), y(y2), z(z2), w(w2) {}
-
-			vec4(vec3 v) : x(v.x), y(v.y), z(v.z), w(1) {}
-		#endif
 	}
 	vec4, *vec4Ptr;
 	typedef struct mat4
@@ -129,175 +119,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#ifdef __cplusplus
-// Some C++ operator overloads
-// Non-member C++ operators!
-
-// --- vec3 operations ---
-inline
-vec3 operator+(const vec3 &a, const vec3 &b) // vec3+vec3
-{
-	return vec3(a.x+b.x, a.y+b.y, a.z+b.z);
-}
-
-inline
-vec3 operator-(const vec3 &a, const vec3 &b) // vec3-vec3
-{
-	return vec3(a.x-b.x, a.y-b.y, a.z-b.z);
-}
-
-	// Questionable, not like GLSL
-inline
-float operator*(const vec3 &a, const vec3 &b) // vec3 dot vec3
-{
-	return (a.x*b.x+ a.y*b.y+ a.z*b.z);
-}
-
-inline
-vec3 operator*(const vec3 &b, double a) // vec3 * scalar
-{
-	return vec3(a*b.x, a*b.y, a*b.z);
-}
-
-inline
-vec3 operator*(double a, const vec3 &b) // scalar * vec3
-{
-	return vec3(a*b.x, a*b.y, a*b.z);
-}
-
-inline
-vec3 operator/(const vec3 &b, double a) // vec3 / scalar
-{
-	return vec3(b.x/a, b.y/a, b.z/a);
-}
-
-inline
-void operator+=(vec3 &a, const vec3 &b) // vec3+=vec3
-{
-	a = a + b;
-}
-
-inline
-void operator-=(vec3 &a, const vec3 &b) // vec3-=vec3
-{
-	a = a - b;
-}
-
-inline
-void operator*=(vec3 &a, const float &b) // vec3*=scalar
-{
-	a = a * b;
-}
-
-inline
-void operator/=(vec3 &a, const float &b) // vec3/=scalar
-{
-	a = a / b;
-}
-
-// --- vec4 operations ---
-
-inline
-vec4 operator+(const vec4 &a, const vec4 &b) // vec4+vec4
-{
-	return vec4(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w);
-}
-
-inline
-vec4 operator-(const vec4 &a, const vec4 &b) // vec4-vec4
-{
-	return vec4(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w);
-}
-
-	// Questionable, not like GLSL
-inline
-float operator*(const vec4 &a, const vec4 &b) // vec4 dot vec4
-{
-	return (a.x*b.x+ a.y*b.y+ a.z*b.z+ a.w*b.w);
-}
-
-inline
-vec4 operator*(const vec4 &b, double a) // vec4 * scalar
-{
-	return vec4(a*b.x, a*b.y, a*b.z, a*b.w);
-}
-
-inline
-vec4 operator*(double a, const vec4 &b) // scalar * vec4
-{
-	return vec4(a*b.x, a*b.y, a*b.z, a*b.w);
-}
-
-inline
-vec4 operator/(const vec4 &b, double a) // vec4 / scalar
-{
-	return vec4(b.x/a, b.y/a, b.z/a, b.w/a);
-}
-
-
-inline
-void operator+=(vec4 &a, const vec4 &b) // vec4+=vec4
-{
-	a = a + b;
-}
-
-inline
-void operator-=(vec4 &a, const vec4 &b) // vec4-=vec4
-{
-	a = a - b;
-}
-
-inline
-void operator*=(vec4 &a, const float &b) // vec4 *= scalar
-{
-	a = a * b;
-}
-
-inline
-void operator/=(vec4 &a, const float &b) // vec4 /= scalar
-{
-	a = a / b;
-}
-
-// --- Matrix multiplication ---
-
-// mat4 * mat4
-inline
-mat4 operator*(const mat4 &a, const mat4 &b)
-{
-	return (Mult(a, b));
-}
-
-// mat3 * mat3
-inline
-mat3 operator*(const mat3 &a, const mat3 &b)
-{
-	return (MultMat3(a, b));
-}
-
-// mat4 * vec3
-inline
-vec3 operator*(const mat4 &a, const vec3 &b)
-{
-	return MultVec3(a, b); // result = a * b
-}
-
-// mat4 * vec4
-inline
-vec4 operator*(const mat4 &a, const vec4 &b)
-{
-	return MultVec4(a, b); // result = a * b
-}
-
-// mat3 * vec3
-inline
-vec3 operator*(const mat3 &a, const vec3 &b)
-{
-	return MultMat3Vec3(a, b); // result = a * b
-}
-
-#endif
-
 
 #endif

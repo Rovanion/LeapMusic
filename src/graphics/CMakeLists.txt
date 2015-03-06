@@ -1,5 +1,5 @@
 add_library (Graphics
-	Graphics.cpp
+	Graphics.c
 	GLUtilities.c
 	VectorUtils3.c
 	LoadObject.c

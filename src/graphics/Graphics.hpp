@@ -10,14 +10,17 @@ class Graphics {
 public:
 	static void init(int argc, char** argv);
 private:
-	static int initResources(void);
+	static Model* initResources(void);
 	static void freeResources(void);
 	static void onDisplay(void);
 	static void onTimer(int);
 	static void drawObject(mat4, Model*, GLuint);
+	static void drawModel(Model*,	GLuint,	char*, char*,	char*);
+
+	static const bool DEBUG = true;
+	static Model* bunny;
 
 	static GLuint handProgram;
-	static Model* bunny;
 
 	static constexpr GLfloat near = 1.0;
 	static constexpr GLfloat far = 300.0;

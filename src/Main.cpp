@@ -9,7 +9,7 @@
 #include "Matte.hpp"
 #include "Sound.hpp"
 #include "Consumer.hpp"
-#include "graphics/Graphics.hpp"
+#include "graphics/Graphics.h"
 
 int main(int argc, char** argv) {
 	// Create a sample listener and controller
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 	std::thread consumerThread(&Consumer::threadEntry,
 	                           std::ref(listener), std::ref(sound));
 
-	Graphics::init(argc, argv);
+	initGraphics(argc, argv);
 
 	if (argc > 1 && strcmp(argv[1], "--bg") == 0)
 		controller.setPolicy(Leap::Controller::POLICY_BACKGROUND_FRAMES);
