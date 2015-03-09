@@ -5,7 +5,6 @@
 #include <chrono>
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
 
 #include "../include/Leap.h"
 #include "LeapListener.hpp"
@@ -14,6 +13,7 @@
 #include "Mixer.hpp"
 #include "Consumer.hpp"
 #include "graphics/Graphics.hpp"
+#include "graphics/MicroGlut.h"
 
 int main(int argc, char** argv) {
 	// Create a sample listener and controller

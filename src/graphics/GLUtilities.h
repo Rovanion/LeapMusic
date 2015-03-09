@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#include "MicroGlut.h"
 
 
 void printError(const char *functionName);
