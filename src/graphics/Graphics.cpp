@@ -46,7 +46,7 @@ void Graphics::init(int argc, char** argv) {
 	glutInitContextVersion(3, 2);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(300, 200);
-	glutCreateWindow("Leap Music!");
+	glutCreateWindow((char*)"Leap Music!");
 	printError("Graphics::init()");
 
 	glewExperimental = GL_TRUE;

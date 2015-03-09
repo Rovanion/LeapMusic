@@ -4,11 +4,11 @@ add_library (Graphics
 	VectorUtils3.c
 	LoadObject.c
 	LoadTGA.c
+	MicroGlut.c
 	shaders/main.vert
 	shaders/main.frag)
 target_link_libraries (Graphics
 	${OPENGL_LIBRARIES}
-	${GLUT_LIBRARIES}
 	${GLEW_LIBRARIES})
 
 
