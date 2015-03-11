@@ -45,3 +45,6 @@ install_manifest.txt
 *.exe
 *.out
 *.app
+
+# OSX stuff
+.DS_Store
