@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include <thread>
+#include <chrono>
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -31,12 +34,16 @@ Model* Graphics::plane       = NULL;
 GLuint Graphics::green       = 0;
 GLuint Graphics::white       = 0;
 GLuint Graphics::red         = 0;
+GLuint Graphics::darkBlue    = 0;
 GLuint Graphics::clef        = 0;
 GLuint Graphics::signTexture = 0;
 mat4   Graphics::transHand   = T(0, 0, 0);
 mat4   Graphics::transSign   = Mult(T(0, 20, 0), Rx(-M_PI_2));
 mat4   Graphics::transPlane  = Mult(Mult(T(0, 20, 1), Rx(-M_PI_2)), S(1.5, 1.5, 1.5));
 std::atomic<bool> Graphics::signShowing = {false};
+std::atomic<bool> Graphics::loadNewSign = {false};
+std::atomic<bool> Graphics::menuOpen = {false};
+std::string Graphics::signTexturePath = "";
 
 // The following will immediately be overwritten by Consumer.
 std::atomic<float> Graphics::handX = {0};
@@ -50,7 +57,7 @@ void Graphics::init(int argc, char** argv) {
 	glutInit(pargc, argv);
 	glutInitContextVersion(3, 2);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowSize(400, 300);
+	glutInitWindowSize(1024, 768);
 	glutCreateWindow("Leap Music!");
 	printError("Graphics::init()");
 
@@ -92,12 +99,16 @@ int Graphics::initResources(void) {
 	LoadTGATextureSimple((char*)"./src/graphics/textures/green.tga", &green);
 	LoadTGATextureSimple((char*)"./src/graphics/textures/white.tga", &white);
 	LoadTGATextureSimple((char*)"./src/graphics/textures/red.tga", &red);
+	LoadTGATextureSimple((char*)"./src/graphics/textures/darkblue.tga", &darkBlue);
 	LoadTGATextureSimple((char*)"./src/graphics/textures/clef_short.tga", &clef);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glutTimerFunc(16, &Graphics::onTimer, 0);
+
+	// From GLUtilities.h, to enable keyIsdown().
+	initKeymapManager();
 
 	printError("Graphics::initResources()");
 	return 1;
@@ -108,18 +119,28 @@ void Graphics::onDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	transHand = T(0, handY / 10, 0);
-	if (time > 100)
+	if (time > 1000)
 		easter(time);
 	if (recording)
 		glBindTexture(GL_TEXTURE_2D, red);
 	else if(playing)
 		glBindTexture(GL_TEXTURE_2D, green);
+	else if(menuOpen){
+		glBindTexture(GL_TEXTURE_2D, darkBlue);
+		transHand = T(handX / 10, handY / 10, 0);
+	}
 	else
 		glBindTexture(GL_TEXTURE_2D, white);
+
 	drawObject(transHand, note, program);
 
 	glBindTexture(GL_TEXTURE_2D, clef);
 	drawObject(transPlane, plane, program);
+
+	if (loadNewSign){
+		LoadTGATextureSimple((char*)signTexturePath.c_str(), &signTexture);
+		loadNewSign = false;
+	}
 
 	if (signShowing) {
 		glBindTexture(GL_TEXTURE_2D, signTexture);
@@ -155,10 +176,20 @@ void Graphics::easter(GLfloat time){
 }
 
 void Graphics::showSign(std::string imagePath){
-	LoadTGATextureSimple((char*)imagePath.c_str(), &signTexture);
+	signTexturePath = imagePath;
 	signShowing = true;
+	loadNewSign = true;
 }
 
 void Graphics::hideSign(void){
 	signShowing = false;
+}
+
+void Graphics::openMenu(void){
+
+	menuOpen = true;
+}
+
+void Graphics::closeMenu(void){
+	menuOpen = false;
 }

@@ -13,6 +13,7 @@ class Menu{
 	void removeEntry(Entry e);
 	std::vector<Entry> entries;
 	bool isOpen = false;
+	bool justClosed = false;
 
  private:
 	const float MENU_SIZE = 60;

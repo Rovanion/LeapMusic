@@ -35,6 +35,9 @@ public:
 	 */
 	static void hideSign(void);
 
+	static void openMenu(void);
+	static void closeMenu(void);
+
 	static std::atomic<float> handX;
 	static std::atomic<float> handY;
 	static std::atomic<bool> playing;
@@ -52,6 +55,7 @@ private:
 	static GLuint green;
 	static GLuint white;
 	static GLuint red;
+	static GLuint darkBlue;
 	static GLuint clef;
 	static GLuint signTexture;
 	static Model* bunny;
@@ -60,7 +64,11 @@ private:
 	static mat4   transHand;
 	static mat4   transSign;
 	static mat4   transPlane;
+
 	static std::atomic<bool> signShowing;
+	static std::atomic<bool> loadNewSign;
+	static std::atomic<bool> menuOpen;
+	static std::string signTexturePath;
 
 	static constexpr GLfloat near = 1.0;
 	static constexpr GLfloat far = 300.0;
